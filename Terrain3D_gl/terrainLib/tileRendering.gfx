@@ -1,0 +1,172 @@
+#include "common.gfx"
+	
+#define FOG // Fog aktivieren
+
+shared {
+	const vec4 vFogColor = vec4(56.0f / 255.0f, 112.0f / 255.0f, 168.0f / 255.0f, 1.0f);
+}
+
+uniform {
+	mat4x4 mWorldView;
+	vec3 vScale;
+	float fBorderHeight;
+	vec2 vTexCoordOffset;
+	vec2 vTexCoordSize;
+	
+	mat4x4 mProjection;
+	
+	sampler2D txTerrain;
+}
+
+inputlayout { pos : UNSIGNED_INT }
+
+vertex {
+$ifndef INDEXED_DRAWING
+	in uint pos;
+$else
+$	define pos uint( gl_VertexID )
+$endif
+
+	out vec2 vTexCoord;
+	#ifdef FOG
+		out vec3 vPosCS;
+	#endif
+}
+
+fragment {
+	in vec2 vTexCoord;
+	#ifdef FOG
+		in vec3 vPosCS;
+	#endif
+
+	out vec4 vColor;
+}
+
+vertex {
+	#ifdef FOG
+	// f = exp(-(density * dist)^n) => density = (-ln(f))^(1/n) / dist
+
+	#define zFar 400000.0f
+	#define density (pow(-log(0.01f), 0.25f) / zFar)
+	#define density2 (density * density)
+	#endif
+
+	//--------------------------------------------------------------------------------------
+	// Vertex Shader
+	//--------------------------------------------------------------------------------------
+	void VS()
+	{ 
+		uvec3 vuPos = UnpackVertex( pos );
+	    
+		bool bBorder = false;
+		if (vuPos.x > TILE_SIZE)
+		{
+			vuPos.x = (vuPos.x << 2u) & ((1u << NUM_XY_BITS) - 1u);
+			bBorder = true;
+		}
+		else if (vuPos.y > TILE_SIZE)
+		{
+			vuPos.y = (vuPos.y << 2u) & ((1u << NUM_XY_BITS) - 1u);
+			bBorder = true;
+		}
+	    
+		vec4 vPos = vec4(vuPos, 1.0f);
+
+		vTexCoord = vTexCoordOffset + (vPos.xy / vec2(TILE_SIZE, TILE_SIZE)) * vTexCoordSize;
+	    
+		vPos.z += 0.5f;
+		vPos.xyz *= vScale;
+
+		if (bBorder)
+		{
+			vPos.z -= fBorderHeight;
+		}
+	    
+		vPos = mWorldView * vPos;
+	#ifdef FOG
+		vPosCS = vPos.xyz / vPos.w;
+	#endif
+		gl_Position = mProjection * vPos;
+	}
+}
+
+//--------------------------------------------------------------------------------------
+// Pixel Shader
+//--------------------------------------------------------------------------------------
+
+fragment {
+	void PS()
+	{
+		vColor = texture( txTerrain, vTexCoord );
+
+	#ifdef FOG
+		float fFog = density2 * dot(vPosCS, vPosCS);
+		fFog = exp(- fFog * fFog);
+		vColor = fFog * vColor + (1.0f - fFog) * vFogColor;	
+	#endif
+	}
+}
+
+uniform {
+	float fSaturation;
+}
+
+fragment {
+	vec3 SAT_MODIFY(vec3 clr) {
+		float mx    = max(clr.r,max(clr.g,clr.b));
+		float mn    = min(clr.r,min(clr.g,clr.b));
+		float delta = 1.0f/(mx-mn);
+		float sat   = (mx==0 ? 0.0f : 1.0f-(mn/mx))*fSaturation;
+		float val	= mx;
+		
+		float f;
+		// hue
+		if (mx==mn)				return	vec3(val,val,val);	// achromatic case	OK	 
+		else if (mx==clr.r) {
+			if (clr.g>=clr.b)	{ f=(clr.g-clr.b)*delta;		return val*vec3(1.0f, (1.0f-(1.0f-f)*sat), (1.0f-sat)); }
+			else				{ f=1.0f+(clr.g-clr.b)*delta;	return val*vec3(1.0f, (1.0f-sat),(1.0f-f*sat)); }
+		}
+		else if (mx==clr.g) {
+			if (clr.b>=clr.r)	{ f=(clr.b-clr.r)*delta;		return val*vec3((1.0f-sat), 1.0f, (1.0f-(1.0f-f)*sat)); }
+			else				{ f=1.0f+(clr.b-clr.r)*delta;	return val*vec3((1.0f-f*sat), 1.0f,(1.0f-sat)); }
+		}
+		else {
+			if (clr.r>=clr.g)	{ f=(clr.r-clr.g)*delta;		return val*vec3((1.0f-(1.0f-f)*sat), (1.0f-sat), 1.0f); }
+			else				{ f=1.0f+(clr.r-clr.g)*delta;	return val*vec3((1.0f-sat),(1.0f-f*sat), 1.0f); }
+		}
+	}
+
+	vec4 SAT_MODIFY(vec4 rgba) {
+		return vec4(SAT_MODIFY(rgba.xyz),rgba.w);
+	}
+	
+	void PSSatModify()
+	{
+		vColor = SAT_MODIFY(texture(txTerrain, vTexCoord));
+	#ifdef FOG
+		float fFog = density2 * dot(vPosCS, vPosCS);
+		fFog = exp(- fFog * fFog);
+		vColor = fFog * vColor + (1.0f - fFog) * vFogColor;	
+	#endif
+	}
+}
+
+pass {
+	fragDataName vColor;
+
+	SetVertexShader( VS() );
+	SetFragmentShader( PS() );
+	state {
+		glEnable( GL_DEPTH_TEST );
+	}
+}
+
+pass {
+	fragDataName vColor;
+
+	SetVertexShader( VS() );
+	SetFragmentShader( PSSatModify() );
+	state {
+		glEnable( GL_DEPTH_TEST );
+	}
+}

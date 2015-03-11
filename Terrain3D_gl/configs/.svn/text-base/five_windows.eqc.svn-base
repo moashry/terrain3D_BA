@@ -1,0 +1,87 @@
+server {
+	config {
+		appNode{
+			pipe {
+				device 1
+				window {
+ 					viewport [ 100 450 480 300 ]
+ 					channel {
+ 						name "left"
+ 					}
+				}
+				window {
+ 					viewport [ 1120 450 480 300 ]
+ 					channel {
+ 						name "right"
+ 					}
+				}
+			}
+			pipe {
+				window { 
+ 					viewport [ 610 100 480 300 ]
+					channel {
+						name "forward"
+					}
+				}
+				window {
+ 					viewport [ 610 450 480 300 ]
+ 					channel {
+ 						name "down"
+ 					}
+				}
+ 				window {
+ 					viewport [ 610 800 480 300 ]
+ 					
+ 					channel {
+ 						name "backward"
+ 					}
+ 				}
+			}
+		}
+
+		compound {
+			channel "left"
+			wall {
+				bottom_left  [ -1 -.5  .8 ]
+				bottom_right [ -1 -.5 -.8 ]
+				top_left     [ -1  .5  .8 ]
+			}
+		}
+		
+		compound {
+			channel "right"
+			wall {
+				bottom_left  [ 1 -.5 -.8 ]
+				bottom_right [ 1 -.5  .8 ]
+				top_left     [ 1  .5 -.8 ]
+			}
+		}
+		
+		compound {
+			channel "down"
+			wall {
+				bottom_left  [ -.8 -1  .5 ]
+				bottom_right [  .8 -1  .5 ]
+				top_left     [ -.8 -1 -.5 ]
+			}
+		}
+		
+		compound {
+			channel "forward"
+			wall {
+				bottom_left  [ -.8 -.5 -1 ]
+				bottom_right [  .8 -.5 -1 ]
+				top_left     [ -.8  .5 -1 ]
+			}
+		}
+		
+		compound {
+			channel "backward"
+			wall {
+				bottom_left  [  .8 -.5 1 ]
+				bottom_right [ -.8 -.5 1 ]
+				top_left     [  .8  .5 1 ]
+			}
+		}
+	}
+}

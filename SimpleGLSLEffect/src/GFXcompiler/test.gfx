@@ -1,0 +1,25 @@
+version 130
+
+inputlayout { position: FLOAT[3], test: UNSIGNED_INT[2] }
+
+uniform {
+	sampler2D test;
+	sampler2D test2;
+	sampler2D test3;
+}
+
+pass {
+	vertex {
+		void main()  {
+			uint a = 0;
+		}
+	}
+	geometry/*( TRIANGLES, TRIANGLES, 6 * 3 )*/ {
+		a
+	}
+	fragDataName color
+	feedback { gl_Position, color }
+} 
+
+pass {}
+

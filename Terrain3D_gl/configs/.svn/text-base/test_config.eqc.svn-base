@@ -1,0 +1,42 @@
+server {
+	config {
+		appNode{
+			pipe {
+				window { 
+ 					viewport [2 2 1000 700]
+ 						
+					channel {
+ 						viewport [0 0 1 1]
+						name "forward.View1"
+					}
+				}
+				window {
+					viewport [5 5 1000 700]
+					
+					channel {
+ 						viewport [0 0 1 1]
+						name "forward.View2"
+					}
+ 				}
+			}
+		}
+
+		compound {
+			channel "forward.View1"
+			wall {
+				bottom_left  [ -.5914 -.414 -1 ]
+				bottom_right [  .5914 -.414 -1 ]
+				top_left     [ -.5914  .414 -1 ]
+			}
+		}
+		
+		compound {
+			channel "forward.View2"
+			wall {
+				bottom_left  [ -.5914 -.414 -1 ]
+				bottom_right [  .5914 -.414 -1 ]
+				top_left     [ -.5914  .414 -1 ]
+			}
+		}
+	}
+}

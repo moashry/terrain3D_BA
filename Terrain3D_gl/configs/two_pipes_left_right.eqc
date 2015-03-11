@@ -1,0 +1,43 @@
+# one pipe fullscreen config using two channels for passive stereo output.
+server {
+    config {
+        appNode {
+            pipe {
+                window {
+					#viewport [0.25 0.25 0.5 0.5]
+					
+                    channel  {
+                        name "channel-left" 
+                    }
+				}
+			}
+			pipe {
+				device 1
+				
+				window {
+                    channel {
+                        name "channel-right" 
+                        #viewport [ 0.5 0 0.5 1.0 ]
+                    }
+                }			
+			}
+        }       
+        compound {
+            wall {
+                bottom_left  [ -.625 -.5 -1 ]
+                bottom_right [  .625 -.5 -1 ]
+                top_left     [ -.625  .5 -1 ]
+            }
+            
+            compound {
+                channel "channel-left"
+                eye [ LEFT ]
+            }
+            
+            compound {
+                channel "channel-right"
+                eye [ RIGHT ]
+            }
+        }
+    }    
+}

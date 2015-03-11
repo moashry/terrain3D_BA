@@ -1,0 +1,74 @@
+/******************************************************************************
+
+texture.h
+
+Author: Andreas Kirsch
+
+(c) Andreas Kirsch
+
+mailto:kirschan@in.tum.de
+
+*******************************************************************************/
+#pragma once
+#include "GL\glew.h"
+
+#include "device.h"
+
+namespace Renderer {
+	class Texture {
+		friend class Device;
+	public:
+		Texture( GLuint textureID, GLenum internalFormat );
+		virtual ~Texture();
+
+		operator GLuint() { return m_textureID; }
+
+		GLuint GetTextureID() { return m_textureID; }
+		GLenum GetInternalFormat() const { return m_internalFormat; }
+
+	protected:
+		GLuint m_textureID;
+		GLenum m_internalFormat;
+	};
+
+	class Texture2D : public Texture {
+		friend class Device;
+	public:
+		Texture2D( GLuint textureID, GLenum internalFormat, GLuint width, GLuint height ) : Texture( textureID, internalFormat ), m_width( width ), m_height( height ) {}
+
+		//FIXME create a Texture2D, not a FramebufferTexture2D? [22/4/2010 Marc Treib]
+		static void Create( uint width, uint height, uint mipLevels, GLenum internalFormat, FramebufferTexture2D* &texture, const void *initData = 0 );
+		static bool CreateFromFile( const char *filename, FramebufferTexture2D* &texture, uint &width, uint &height );
+		static bool CreateFromMemory( const uchar *data, uint numBytes, FramebufferTexture2D* &texture, uint &width, uint &height );
+
+		void GenerateMipMap();
+
+		// a border isn't supported usually
+		// width and height are 
+		void CompressedImage( GLint level, const GLvoid *data );
+
+		GLuint GetWidth()  const { return m_width; }
+		GLuint GetHeight() const { return m_height; }
+
+	protected:
+		GLuint m_width, m_height;
+
+		static GLuint CreateGLTexture( uint width, uint height, uint mipLevels, GLenum internalFormat, const void *initData = 0 );
+	};
+
+	class FramebufferTexture2D : public Texture2D {
+		friend class Device;
+
+	public:
+		~FramebufferTexture2D();
+
+		void BindFramebuffer();
+
+		static void Create( uint width, uint height, uint mipLevels, GLenum format, FramebufferTexture2D* &texture );
+
+		FramebufferTexture2D( GLuint textureID, GLenum internalFormat, GLuint framebufferID, GLuint width, GLuint height  ) : Texture2D( textureID, internalFormat, width, height ), m_framebufferID( framebufferID ) {}
+
+	protected:
+		GLuint m_framebufferID;
+	};
+}

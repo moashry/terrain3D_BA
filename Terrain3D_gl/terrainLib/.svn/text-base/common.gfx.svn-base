@@ -1,0 +1,44 @@
+version 150
+
+shared {
+	#define SetVertexShader( callExpr ) vertex { void main() { callExpr; } }
+	#define SetFragmentShader( callExpr ) fragment { void main() { callExpr; } }
+	#define SetGeometryShader( input, output, maxEmitVertices, callExpr ) geometry { layout(input) in; layout(output, max_vertices = maxEmitVertices ) out; void main() { callExpr; } }
+	
+	#define TILE_SIZE 512u
+
+	#if TILE_SIZE == 256u
+	#define NUM_XY_BITS 9u
+	#endif
+
+	#if TILE_SIZE == 512u
+	#define NUM_XY_BITS 10u
+	#endif
+
+	#define NUM_STRIPS_PER_COLUMN 8u
+
+	uint PackVertex(uvec3 v)
+	{
+		uint result;
+
+		result = v.x;
+		result |= v.y << NUM_XY_BITS;
+		result |= v.z << (2u * NUM_XY_BITS);
+/* Use this for debugging GPU decompression code
+		result = v.x & ((1u << NUM_XY_BITS) - 1u);
+		result |= (v.y & ((1u << NUM_XY_BITS) - 1u)) << NUM_XY_BITS;
+		result |= (v.z & ((1u << (32u - NUM_XY_BITS)) - 1u)) << (2u * NUM_XY_BITS);
+*/
+		return result;
+	}
+
+	uvec3 UnpackVertex(uint v)
+	{
+		uvec3 result;
+
+		result.x = v & ((1u << NUM_XY_BITS) - 1u);
+		result.y = (v & (((1u << NUM_XY_BITS) - 1u) << NUM_XY_BITS)) >> NUM_XY_BITS;
+		result.z = v >> (2u * NUM_XY_BITS);
+		return result;
+	}
+}

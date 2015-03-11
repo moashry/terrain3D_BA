@@ -1,0 +1,23 @@
+server {
+	config {
+		appNode {
+			pipe {
+				window {
+					viewport [ 560 200 800 800 ]
+					channel {
+						name "forward"
+					}
+				}
+			}
+		}
+	
+		compound {
+			channel "forward"
+			wall {
+				bottom_left  [ -.414 -.414 -1 ]
+				bottom_right [  .414 -.414 -1 ]
+				top_left     [ -.414  .414 -1 ]
+			}
+		}
+	}
+}

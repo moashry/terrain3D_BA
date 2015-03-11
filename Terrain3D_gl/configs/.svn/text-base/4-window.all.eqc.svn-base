@@ -1,0 +1,612 @@
+#Equalizer 1.0 ascii
+
+# four-window configuration showing all Equalizer features
+global
+{
+    EQ_COMPOUND_IATTR_STEREO_MODE ANAGLYPH
+}
+
+server
+{
+    config
+    {
+        appNode
+        {
+            pipe
+            {
+                name "GPU 1"
+                window
+                {
+                    name     "window1"
+                    viewport [ 25 25 400 400 ]
+                    channel { name "channel1"  }
+                }
+            }
+            pipe
+            {
+                name "GPU 2"
+                window
+                {
+                    name     "window2"
+                    viewport [ 450 25 400 400 ]
+                    channel { name "channel2"  }
+                }
+            }
+            pipe
+            {
+                name "GPU 3"
+                window
+                {
+                    name     "window3"
+                    viewport [ 25 450 400 400 ]
+                    channel { name "channel3"  }
+                }
+            }
+            pipe
+            {
+                name "GPU 4"
+                window
+                {
+                    name     "window4"
+                    viewport [ 450 450 400 400 ]
+                    channel { name "channel4"  }
+                }
+            }
+        }
+
+        # Layouts - one for each demo mode
+        layout
+        {
+            name "Wall"
+            view {}
+        }
+        layout
+        {
+            name "Stereo"
+            view {}
+        }
+        layout
+        {
+            name "HMD"
+            view { viewport [ 0 .5 1 .5 ] }
+        }
+        layout
+        {
+            name "2D"
+            view
+            {
+                viewport [ 0 .5 .5 .5 ]
+                wall
+                {
+                    bottom_left  [ -.5 -.5 -1 ]
+                    bottom_right [  .5 -.5 -1 ]
+                    top_left     [ -.5  .5 -1 ]
+                }
+            }
+        }
+        layout
+        {
+            name "Eye"
+            view
+            {
+                viewport [ 0 .5 .5 .5 ]
+                wall
+                {
+                    bottom_left  [ -.5 -.5 -1 ]
+                    bottom_right [  .5 -.5 -1 ]
+                    top_left     [ -.5  .5 -1 ]
+                }
+            }
+        }
+        layout
+        {
+            name "Pixel"
+            view
+            {
+                viewport [ 0 .5 .5 .5 ]
+                wall
+                {
+                    bottom_left  [ -.5 -.5 -1 ]
+                    bottom_right [  .5 -.5 -1 ]
+                    top_left     [ -.5  .5 -1 ]
+                }
+            }
+        }
+        layout
+        {
+            name "Subpixel"
+            view
+            {
+                viewport [ 0 .5 .5 .5 ]
+                wall
+                {
+                    bottom_left  [ -.5 -.5 -1 ]
+                    bottom_right [  .5 -.5 -1 ]
+                    top_left     [ -.5  .5 -1 ]
+                }
+            }
+        }
+        layout
+        {
+            name "DPlex"
+            view
+            {
+                viewport [ 0 .5 .5 .5 ]
+                wall
+                {
+                    bottom_left  [ -.5 -.5 -1 ]
+                    bottom_right [  .5 -.5 -1 ]
+                    top_left     [ -.5  .5 -1 ]
+                }
+            }
+        }
+        layout
+        {
+            name "WallLB"
+            view {}
+        }
+        layout
+        {
+            name "MultiView"
+            view
+            {
+                viewport [ 0 0 .4 .4 ]
+                wall
+                {
+                    bottom_left  [ -.5 -.5 -1 ]
+                    bottom_right [  .5 -.5 -1 ]
+                    top_left     [ -.5  .5 -1 ]
+                }
+            }
+            view
+            {
+                viewport [ .4 0 .6 .4 ]
+                wall
+                {
+                    bottom_left  [ -.6 -.4 -1 ]
+                    bottom_right [  .6 -.4 -1 ]
+                    top_left     [ -.6  .4 -1 ]
+                }
+            }
+            view
+            {
+                viewport [ 0 .4 1 .6 ]
+                wall
+                {
+                    bottom_left  [ -1 -.6 -1 ]
+                    bottom_right [  1 -.6 -1 ]
+                    top_left     [ -1  .6 -1 ]
+                }
+            }
+        }
+        layout
+        {
+            name "DFR"
+            view
+            {
+                viewport [ 0 .5 .5 .5 ]
+                wall
+                {
+                    bottom_left  [ -.5 -.5 -1 ]
+                    bottom_right [  .5 -.5 -1 ]
+                    top_left     [ -.5  .5 -1 ]
+                }
+            }
+        }
+
+        # Canvas using all layouts
+        canvas
+        {
+            layout "Wall"
+            layout "MultiView"
+            layout "Stereo"
+
+            layout "2D"
+            layout "Eye"
+            layout "DPlex"
+            layout "Pixel"
+            layout "Subpixel"
+
+            layout "WallLB"
+            layout "HMD"
+            
+            layout "DFR"
+
+            wall
+            {
+                bottom_left  [ -.5 -.5 -1 ]
+                bottom_right [  .5 -.5 -1 ]
+                top_left     [ -.5  .5 -1 ]
+            }
+
+            segment
+            {
+                viewport [ 0 .5 .5 .5 ]
+                channel "channel1"
+            }
+            segment
+            {
+                viewport [ .5 .5 .5 .5 ]
+                channel "channel2"
+            }
+            segment
+            {
+                viewport [ 0 0 .5 .5 ]
+                channel "channel3"
+            }
+            segment
+            {
+                viewport [ .5 0 .5 .5 ]
+                channel "channel4"
+            }
+        }
+
+        # wall compound - need swap barrier
+        compound
+        {
+            compound
+            {
+                channel ( segment 0 layout "Wall" view 0 )
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 1 layout "Wall" view 0 )
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 2 layout "Wall" view 0 )
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 3 layout "Wall" view 0 )
+                swapbarrier {}
+            }
+        }
+
+        # Stereo compound - need swap barrier
+        compound
+        {
+            eye [ LEFT RIGHT ]
+            compound
+            {
+                channel ( segment 0 layout "Stereo" view 0 )
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 1 layout "Stereo" view 0 )
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 2 layout "Stereo" view 0 )
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 3 layout "Stereo" view 0 )
+                swapbarrier {}
+            }
+        }
+
+        # HMD compound - need swap barrier
+        compound
+        {
+            attributes
+            {
+                stereo_anaglyph_left_mask    [ RED GREEN BLUE ]
+                stereo_anaglyph_right_mask   [ RED GREEN BLUE ]
+            }
+
+            compound
+            {
+                channel ( segment 0 layout "HMD" view 0 )
+                eye [ LEFT ]
+
+                # Workaround: Normally one view pre HMD is configured, with two
+                # fully overlapping segments on the canvas.
+                # Since we want to reuse the existing non-overlapping segments,
+                # we configure the view to span both segments and overwrite
+                # the computed frustum by inserting this child
+                compound
+                {
+                    wall
+                    {
+                        bottom_left  [ -.5 -.5 -1 ]
+                        bottom_right [  .5 -.5 -1 ]
+                        top_left     [ -.5  .5 -1 ]
+                        type HMD
+                    }
+                }
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 1 layout "HMD" view 0 )
+                eye [ RIGHT ]
+                compound
+                {
+                    wall
+                    {
+                        bottom_left  [ -.5 -.5 -1 ]
+                        bottom_right [  .5 -.5 -1 ]
+                        top_left     [ -.5  .5 -1 ]
+                        type HMD
+                    }
+                }
+                swapbarrier {}
+            }
+        }
+
+        # wall compound - need swap barrier
+        compound
+        {
+            compound
+            {
+                channel ( segment 0 layout "MultiView" view 2 )
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 1 layout "MultiView" view 2 )
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 2 layout "MultiView" view 2 )
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 3 layout "MultiView" view 2 )
+                swapbarrier {}
+            }
+        }
+
+        # 2D compound
+        compound
+        {
+            channel ( segment 0 layout "2D" view 0 )
+            load_equalizer { mode 2D }
+
+            compound {}
+            compound
+            { 
+                channel "channel2"
+                outputframe {}
+            }
+            compound
+            { 
+                channel "channel3"
+                outputframe {}
+            }
+            compound
+            { 
+                channel "channel4"
+                outputframe {}
+            }
+            inputframe { name "frame.channel2" }
+            inputframe { name "frame.channel3" }
+            inputframe { name "frame.channel4" }
+        }
+
+        # Eye compound
+        compound
+        {
+            channel ( segment 0 layout "Eye" view 0 )
+            eye [ LEFT RIGHT ]
+
+            compound
+            {
+                eye [ LEFT ]
+                channel "channel2"
+                outputframe {}
+            }
+            compound
+            { 
+                eye [ RIGHT ]
+                channel "channel3"
+                outputframe {}
+            }
+            compound
+            {
+                task [ CLEAR ASSEMBLE ]
+                eye [ LEFT ]
+                inputframe { name "frame.channel2" }
+            }
+            compound
+            {
+                task [ CLEAR ASSEMBLE ]
+                eye [ RIGHT ]
+                inputframe { name "frame.channel3" }
+            }
+        } 
+
+        # Pixel compound
+        compound
+        {
+            channel ( segment 0 layout "Pixel" view 0 )
+
+            compound
+            {
+                pixel [ 0 0 4 1 ]
+                outputframe { type texture }
+            }
+            compound
+            { 
+                channel "channel2"
+                pixel [ 1 0 4 1 ]
+                outputframe {}
+            }
+            compound
+            { 
+                channel "channel3"
+                pixel [ 2 0 4 1 ]
+                outputframe {}
+            }
+            compound
+            { 
+                channel "channel4"
+                pixel [ 3 0 4 1 ]
+                outputframe {}
+            }
+            inputframe { name "frame.channel1" }
+            inputframe { name "frame.channel2" }
+            inputframe { name "frame.channel3" }
+            inputframe { name "frame.channel4" }
+        }            
+
+        # Subpixel compound
+        compound
+        {
+            channel ( segment 0 layout "Subpixel" view 0 )
+
+            compound
+            {
+                subpixel [ 0 4 ]
+                outputframe { type texture }
+            }
+            compound
+            { 
+                channel "channel2"
+                subpixel [ 1 4 ]
+                outputframe {}
+            }
+            compound
+            { 
+                channel "channel3"
+                subpixel [ 2 4 ]
+                outputframe {}
+            }
+            compound
+            { 
+                channel "channel4"
+                subpixel [ 3 4 ]
+                outputframe {}
+            }
+            inputframe { name "frame.channel1" }
+            inputframe { name "frame.channel2" }
+            inputframe { name "frame.channel3" }
+            inputframe { name "frame.channel4" }
+        }            
+
+        # DPlex compound
+        compound
+        {
+            channel ( segment 0 layout "DPlex" view 0 )
+            framerate_equalizer {}
+
+            compound
+            { 
+                channel "channel2"
+                phase 0 period 3
+                outputframe { name "DPlex" }
+            }
+            compound
+            { 
+                channel "channel3"
+                phase 1 period 3
+                outputframe { name "DPlex" }
+            }
+            compound
+            { 
+                channel "channel4"
+                phase 2 period 3
+                outputframe { name "DPlex" }
+            }
+            inputframe { name "DPlex" }
+        }            
+
+        # wall with cross-segment load-balancing
+        compound
+        {
+            view_equalizer {}
+            compound
+            {
+                channel ( segment 0 layout "WallLB" view 0 )
+                load_equalizer {}
+
+                compound{ }
+                compound{ channel "channel2" outputframe{ name "v1c2" }}
+                compound{ channel "channel3" outputframe{ name "v1c3" }}
+                compound{ channel "channel4" outputframe{ name "v1c4" }}
+                inputframe { name "v1c2" }
+                inputframe { name "v1c3" }
+                inputframe { name "v1c4" }
+
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 1 layout "WallLB" view 0 )
+                load_equalizer {}
+
+                compound{ }
+                compound{ channel "channel1" outputframe{ name "v2c1" }}
+                compound{ channel "channel3" outputframe{ name "v2c3" }}
+                compound{ channel "channel4" outputframe{ name "v2c4" }}
+                inputframe { name "v2c1" }
+                inputframe { name "v2c3" }
+                inputframe { name "v2c4" }
+
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 2 layout "WallLB" view 0 )
+                load_equalizer {}
+
+                compound{ }
+                compound{ channel "channel1" outputframe{ name "v3c1" }}
+                compound{ channel "channel2" outputframe{ name "v3c2" }}
+                compound{ channel "channel4" outputframe{ name "v3c4" }}
+                inputframe { name "v3c1" }
+                inputframe { name "v3c2" }
+                inputframe { name "v3c4" }
+
+                swapbarrier {}
+            }
+            compound
+            {
+                channel ( segment 3 layout "WallLB" view 0 )
+                load_equalizer {}
+
+                compound{ }
+                compound{ channel "channel1" outputframe{ name "v4c1" }}
+                compound{ channel "channel2" outputframe{ name "v4c2" }}
+                compound{ channel "channel3" outputframe{ name "v4c3" }}
+                inputframe { name "v4c1" }
+                inputframe { name "v4c2" }
+                inputframe { name "v4c3" }
+
+                swapbarrier {}
+            }
+        }
+
+        # Dynamic Frame Resolution compound
+        compound
+        {
+            channel ( segment 0 layout "DFR" view 0 )
+            
+            compound 
+            {
+                load_equalizer{}
+                compound {}
+                compound { channel "channel2" outputframe{} }
+                compound { channel "channel3" outputframe{} }
+                compound { channel "channel4" outputframe{} }
+                inputframe { name "frame.channel2" }
+                inputframe { name "frame.channel3" }
+                inputframe { name "frame.channel4" }
+
+                DFR_equalizer { framerate 15 }
+                outputframe{ name "frame.scale" type texture }
+            }
+
+            inputframe{ name "frame.scale" }
+        }            
+    }
+}

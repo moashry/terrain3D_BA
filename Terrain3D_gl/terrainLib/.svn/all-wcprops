@@ -1,0 +1,227 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib
+END
+terrainlib.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/terrainlib.h
+END
+dataloader.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/dataloader.cpp
+END
+tileRendering.h
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/tileRendering.h
+END
+tile.h
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/tile.h
+END
+tileRenderingBB.h
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/tileRenderingBB.h
+END
+terrain.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/terrain.h
+END
+decompression.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/decompression.cpp
+END
+occlusionculling.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/kirschan/!svn/ver/470/branches/ashry/Terrain3D_gl/terrainLib/occlusionculling.cpp
+END
+commonCompression.gfx
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/kirschan/!svn/ver/470/branches/ashry/Terrain3D_gl/terrainLib/commonCompression.gfx
+END
+decompression.gfx
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/decompression.gfx
+END
+decompressionStreamout.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/decompressionStreamout.cpp
+END
+decompressionStreamout.gfx
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/kirschan/!svn/ver/470/branches/ashry/Terrain3D_gl/terrainLib/decompressionStreamout.gfx
+END
+resourcepool.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/resourcepool.cpp
+END
+geometrydecompressor.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/geometrydecompressor.cpp
+END
+util.h
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/kirschan/!svn/ver/470/branches/ashry/Terrain3D_gl/terrainLib/util.h
+END
+Vec.h
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/kirschan/!svn/ver/470/branches/ashry/Terrain3D_gl/terrainLib/Vec.h
+END
+tiletree.h
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/tiletree.h
+END
+common.gfx
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/common.gfx
+END
+tileRendering.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/tileRendering.cpp
+END
+debug.h
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/kirschan/!svn/ver/470/branches/ashry/Terrain3D_gl/terrainLib/debug.h
+END
+terrainlib.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/terrainlib.cpp
+END
+tileRendering.gfx
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/tileRendering.gfx
+END
+tile.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/tile.cpp
+END
+tileRenderingBB.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/tileRenderingBB.cpp
+END
+tileRenderingBB.gfx
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/kirschan/!svn/ver/470/branches/ashry/Terrain3D_gl/terrainLib/tileRenderingBB.gfx
+END
+terrainConfiguration.h
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/terrainConfiguration.h
+END
+terrain.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/terrain.cpp
+END
+dataloader.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/dataloader.h
+END
+global.h
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/global.h
+END
+decompression.h
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/decompression.h
+END
+occlusionculling.h
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/kirschan/!svn/ver/470/branches/ashry/Terrain3D_gl/terrainLib/occlusionculling.h
+END
+decompressionStreamout.h
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/decompressionStreamout.h
+END
+resourcepool.h
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/resourcepool.h
+END
+debug.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/kirschan/!svn/ver/470/branches/ashry/Terrain3D_gl/terrainLib/debug.cpp
+END
+geometrydecompressor.h
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/geometrydecompressor.h
+END
+terrainConfiguration.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/kirschan/!svn/ver/554/branches/ashry/Terrain3D_gl/terrainLib/terrainConfiguration.cpp
+END
+box.h
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/kirschan/!svn/ver/470/branches/ashry/Terrain3D_gl/terrainLib/box.h
+END

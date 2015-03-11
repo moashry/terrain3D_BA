@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project SimpleGLSLEffect">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+    	<!-- <jar destfile="output/GLSLeffectCompiler.jar" filesetmanifest="mergewithoutmain"> -->
+        	<jar destfile="../bin/GLSLeffectCompiler.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Main-Class" value="SimpleGLSLEffectCompiler"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset excludes="__*.*" includes="*.class" dir="."/><fileset file="effectTemplates.stg"></fileset>
+        	<zipfileset excludes="META-INF/*.SF" src="antlr-runtime-3.1.2.jar"></zipfileset>
+            <zipfileset src="stringtemplate-3.2.jar" excludes="META-INF/*.SF"></zipfileset>
+            <zipfileset src="antlr-2.7.7.jar" excludes="META-INF/*.SF"></zipfileset>
+			<zipfileset src="jogl.jar" excludes="META-INF/*.SF"></zipfileset>
+			<zipfileset src="gluegen-rt.jar" excludes="META-INF/*.SF"></zipfileset>
+        </jar>
+    </target>
+</project>

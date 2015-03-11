@@ -1,0 +1,77 @@
+10
+
+dir
+557
+https://cgsr1.informatik.tu-muenchen.de:8443/svn/kirschan/branches/ashry/Equalizer-env/x64/Debug/Headers/eq
+https://cgsr1.informatik.tu-muenchen.de:8443/svn/kirschan
+
+
+
+2010-04-14T11:36:20.483602Z
+422
+treibm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+97d7bf2b-4e60-da48-a750-d249e17d3b3d
+
+plugins
+dir
+
+net
+dir
+
+base
+dir
+
+eq.h
+file
+
+
+
+
+2010-04-20T15:03:39.154374Z
+b253ef2cb87c93dded2a19a5afc81eb3
+2010-04-14T11:36:20.483602Z
+422
+treibm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2388
+
+util
+dir
+
+client
+dir
+

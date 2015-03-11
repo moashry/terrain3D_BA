@@ -1,0 +1,501 @@
+group effectTemplates;
+
+GLToggle(property,flag) ::= "<if(property)>glEnable( <flag> );<else>glDisable( <flag> );<endif>"
+
+uniformName( uniform ) ::= "<uniform.name>"
+
+uniformGLSLDeclaration(uniforms) ::= <<
+<uniforms : { uniform | uniform <uniform.type> <uniform.name>;
+}>
+>>
+
+initUniformLocations(uniform, uniformIndex) ::= <<
+<result.passes: { pass | uniformLocations[ <uniformIndex> ][ <i0> ] = glGetUniformLocation( programs[ <i0> ], "<uniform.name>" );
+}>
+>>
+
+versionInfo() ::= "<if(result.version)>#version <result.version>
+
+<endif>"
+
+uniformTypeMap ::= [
+	"sampler2D":"Sampler2D",
+	"isampler2D":"Sampler2D",
+	"usampler2D":"Sampler2D",
+	
+	"sampler1DShadow":"SamplerRaw1D",
+	"sampler2DShadow":"SamplerRaw2D",
+	"sampler1DArrayShadow":"SamplerRaw1DArray",
+	"sampler2DArrayShadow":"SamplerRaw2DArray",
+	
+	"samplerBuffer":"SamplerBuffer",
+	"isamplerBuffer":"SamplerBuffer",
+	"usamplerBuffer":"SamplerBuffer",
+		
+	"vec4":"UniformFloat4",
+	"ivec4":"UniformInt4",
+	"uvec4":"UniformUInt4",
+	"bvec4":"UniformBool4",
+
+	"vec3":"UniformFloat3",
+	"ivec3":"UniformInt3",
+	"uvec3":"UniformUInt3",
+	"bvec3":"UniformBool3",
+	
+	"vec2":"UniformFloat2",
+	"ivec2":"UniformInt2",
+	"uvec2":"UniformUInt2",
+	"bvec2":"UniformBool2",
+	
+	"float":"UniformFloat1",
+	"int":"UniformInt1",
+	"uint":"UniformUInt1",
+	"bool":"UniformBool1",
+	
+	"mat4":"UniformFloatMatrix4",
+	"mat4x4":"UniformFloatMatrix4"
+]
+
+typeToSize ::= [
+	"UNSIGNED_INT":"4",
+	"FLOAT":"4"
+]
+
+uniformSet( uniformIndex, setExpr ) ::= <<
+for( int i = 0 ; i \< <length(result.passes)> ; i++ ) {
+	GLint location = uniformLocations[ <uniformIndex> ][ i ];
+	if( location != -1 ) {
+		GLuint program = programs[ i ];
+		<(setExpr)( programIndex = "i", ... )>;
+	}
+}
+>>
+
+textureUnitSet( programIndex, setExpr ) ::= <<
+<result.uniforms:{uniform |
+<if(uniform.sampler)>
+if( uniformLocations[ <i0> ][ <programIndex> ] != -1 ) {
+	<(setExpr)( uniformIndex = i0, ... )>; texUnit++;
+}
+<endif>}>
+>>
+
+setTexUnit( uniform, programIndex, uniformIndex ) ::= "glUniform1i( uniformLocations[ <uniformIndex> ][ <programIndex> ], texUnit )"
+setupPassSampler( uniform, programIndex, uniformIndex ) ::= "<uniformName( uniform )>.SetupPass( <programIndex>, texUnit )"
+
+headerContent(name,result) ::= <<
+#pragma once
+#include \<assert.h\>
+
+#include "renderer/effect.h"
+#include "renderer/uniform.h"
+
+class <name> : public Renderer::Effect {
+public:
+	unsigned GetNumPasses() const {
+		return numPasses;
+	}
+	
+	// aka input layout
+	void SetupBinding(unsigned stride, unsigned offset) const;
+	
+	void SetupPass(unsigned pass) const;
+	
+	bool Create(Renderer::Device *unused1, bool unused2, const char *customCode = NULL );
+	
+	void SafeRelease();
+	
+	virtual ~<name>();
+	
+	unsigned GetProgramHandle(unsigned pass) {
+		assert( pass \< <length(result.passes)> );
+		return programs[ pass ];
+	}
+	
+public: 
+	// uniform variables
+	<result.uniforms: { uniform |Renderer::<uniformTypeMap.(uniform.type)> <uniformName(uniform)>;
+
+<endif>}>
+	<name>() <if(result.uniforms)>: <result.uniforms: { uniform |<uniformName(uniform)>(<if(!uniform.sampler)> <length(result.passes)>, programs, uniformLocations[ <i0> ] <endif>)}; separator=", "><endif> {
+	}
+	
+protected:
+	static const unsigned numPasses = <length(result.passes)>;
+	
+	GLuint programs[ <length(result.passes)> ];
+	<if(result.uniforms)>
+	GLint uniformLocations[ <length(result.uniforms)> ][ <length(result.passes)> ];
+	<endif>
+};
+>>
+
+sharedCodeTypeComment( sharedCode ) ::= "<if(sharedCode.uniformBlock)>uniform block<elseif(sharedCode.forAllShaders)>for all shaders<elseif(sharedCode.forFragmentShaders)>for fragment shaders<elseif(sharedCode.forVertexShaders)>for vertex shaders<else>for geometry shaders<endif>"
+
+listSharedCodeIndicesForShader( type ) ::= "<result.sharedCodes: {sharedCode|<if(sharedCode.(type))>sharedCodes[ <i0> ],<endif>}>"
+
+listSharedCodeForShader( type ) ::= "<result.sharedCodes: {sharedCode|<if(sharedCode.(type))><sharedCodeText(sharedCode)><endif>}>"
+
+sharedCodeText(sharedCode) ::= <<
+<if(!sharedCode.uniformBlock)>
+	<sharedCode.code>
+<else>
+	<uniformGLSLDeclaration(sharedCode.uniforms)>
+<endif>
+>>
+
+vertexShaderCode(pass) ::= <<
+	<listSharedCodeForShader( type = "forVertexShaders" )>
+	<pass.vertexShader>
+>>
+
+fragmentShaderCode(pass) ::= <<
+	<listSharedCodeForShader( type = "forFragmentShaders" )>
+	<pass.fragmentShader>
+>>
+
+geometryShaderCode(pass) ::= <<
+	<listSharedCodeForShader( type = "forGeometryShaders" )>
+	<pass.geometryShader.code>
+>>
+
+dumpCode(pass,type,result) ::= <<
+<! NOTE: this rule can be considered quite evil - it uses type to build the name of the rule to call with pass !>
+<({type|<type>ShaderCode})(pass);format="codedump">
+>>
+
+sourceContent(name,result) ::= <<
+/* Shader Code Information
+
+Shared Code Blocks:
+<result.sharedCodes:
+{sharedCode|** Block <i> - <sharedCodeTypeComment(sharedCode)> **:
+<sharedCodeText(sharedCode);format="commentdump">
+}; separator="
+">};
+
+Passes:
+<result.passes:{ pass |
+Pass <i0>:
+<if(pass.vertexShader)>
+** Vertex Shader Code for Pass <i0> **
+	<vertexShaderCode(pass);format="commentdump">
+<endif>
+	
+<if(pass.fragmentShader)>
+** Fragment Shader Code for Pass <i0> **
+	<fragmentShaderCode(pass);format="commentdump">
+<endif>
+
+<if(pass.geometryShader)>
+** Geometry Shader Code for Pass <i0> **
+	<geometryShaderCode(pass);format="commentdump">
+<endif>
+}; separator="
+ ">
+
+*/
+#include "stdio.h"
+#include "GL/glew.h"
+#include "<name>.h"
+
+using namespace Renderer;
+
+static const char *codeForPasses[][3] = {<result.passes:{ pass |
+// pass <i0>
+{
+	// vertex shader code for pass <i0>
+<if(pass.vertexShader)>
+	<vertexShaderCode(pass);format="glslcstring">
+<else>
+	NULL
+<endif>,
+	// fragment shader code for pass <i0>
+<if(pass.fragmentShader)>
+	<fragmentShaderCode(pass);format="glslcstring">
+<else>
+	NULL
+<endif>,
+	// geometry shader code for pass <i0>
+<if(pass.geometryShader)>
+	<geometryShaderCode(pass);format="glslcstring">
+<else>
+	NULL
+<endif>
+
+}
+}; separator=", ">
+};
+
+/*
+static void checkGLError() {
+	GLenum error = glGetError();
+	if( error != GL_NO_ERROR ) {
+		printf( "%s\n", gluErrorString(error) );
+	}
+}*/
+void Renderer::checkGLError();
+
+
+void <name>::SetupPass( unsigned pass ) const {
+	if( pass >= <length(result.passes)> ) {
+		// error?
+		return;
+	}
+	glUseProgram( programs[ pass ] );
+	checkGLError();
+	
+	switch( pass ) {
+<result.passes:{ pass |
+	case <i0>: {<pass.stateBlock:{ stateBlock |
+		<GLToggle(property = stateBlock.depthTest, flag = "GL_DEPTH_TEST")>
+		<GLToggle(property = stateBlock.stencilTest, flag = "GL_STENCIL_TEST")>
+}>	
+		// set the texture bindings
+		GLuint texUnit = 0;
+		<textureUnitSet( programIndex = i0, setExpr = "setupPassSampler" )>
+		
+		GLuint oldNumTexUnitsUsed = numUsedTexUnits;
+		numUsedTexUnits = texUnit;
+		
+		// disable unused texture units
+		for( ; texUnit \< oldNumTexUnitsUsed ; texUnit++ ) {
+			Sampler::DisableTextureUnit( texUnit );
+		}
+		
+		checkGLError();
+	
+		return;
+}}>
+	}
+}
+
+void <name>::SetupBinding( unsigned stride, unsigned offset ) const {
+	unsigned totalSize = stride;
+	if( !totalSize ) {
+		totalSize = <result.bindings: {binding |<binding.size> * <typeToSize.(binding.type)>}; separator=" + ", null="0">;
+	}
+	
+	<result.bindings: {binding |<if(!binding.integer)>
+glVertexAttribPointer( <i0>, <binding.size>, GL_<binding.type>, false, totalSize, (const GLvoid*) offset );
+<else>
+glVertexAttribIPointer( <i0>, <binding.size>, GL_<binding.type>, totalSize, (const GLvoid*) offset );
+<endif>
+glEnableVertexAttribArray( <i0> );
+offset += <typeToSize.(binding.type)> * <binding.size>;
+}>
+	unsigned oldNumUsedBindings = numUsedBindings;
+	numUsedBindings = <length(result.bindings)>;
+	
+	// disable unused vertex arrays
+	for( unsigned binding = numUsedBindings ; binding \< oldNumUsedBindings ; binding++ ) {
+		glDisableVertexAttribArray( binding );
+	}
+
+	checkGLError();
+}
+
+static const char *PrintableNameForShaderType( GLenum shaderType ) {
+	switch( shaderType ) {
+	case GL_VERTEX_SHADER:
+		return "Vertex Shader";
+	case GL_GEOMETRY_SHADER_ARB:
+		return "Geometry Shader ARB";
+	case GL_FRAGMENT_SHADER:
+		return "Fragment Shader";
+	}
+	return "Unknown Shader Type";
+}
+
+static bool CompileLog( unsigned pass, GLenum shaderType, GLuint shader ) {
+	GLint infoSize;
+	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoSize);
+	
+	char *message = new char[infoSize];
+	
+	GLsizei length;
+	glGetShaderInfoLog(shader, infoSize, &length, message);
+	
+	if( length > 0 ) {
+		printf( "Pass %i - %s Log:\n%s\n", pass, PrintableNameForShaderType( shaderType ), message );
+	}
+	
+	delete[] message;
+	
+	GLint compileStatus;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);
+	checkGLError();
+
+	return compileStatus == GL_TRUE;
+}
+
+static bool LinkLog( unsigned pass, GLuint program ) {
+	GLint infoSize;
+	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoSize);
+	
+	char *message = new char[infoSize];
+	
+	GLsizei length;
+	glGetProgramInfoLog(program, infoSize, &length, message);
+	
+	if( length > 0 ) {
+		printf( "Pass %i - Linker Log:\n%s\n", pass, message );
+	}
+
+	delete[] message;
+	
+	GLint compileStatus;
+	glGetProgramiv(program, GL_LINK_STATUS, &compileStatus);
+	checkGLError();
+	
+	return compileStatus == GL_TRUE;
+}
+
+bool <name>::Create(Device *unused1, bool unused2, const char *customCode /* = NULL */ ) {
+	// a bit of an hack, if customCode is NULL, set it to an empty string instead
+	if( !customCode ) {
+		customCode = "";
+	}
+	
+	printf( "Compiling technique <name>\n\n" );
+	
+	bool success = true;
+	
+	<! TODO: add one rule for this initialization stuff !>
+	const char *vertexShaderSources[] = { 
+		<versionInfo();format="cstring">
+		"#define VERTEX_SHADER\r\n",
+		customCode,
+		NULL
+	};
+	const unsigned int numVertexShaderSources = sizeof( vertexShaderSources ) / sizeof( *vertexShaderSources );
+	
+	const char *fragmentShaderSources[] = { 
+		<versionInfo();format="cstring">
+		"#define FRAGMENT_SHADER\r\n",
+		customCode,
+		NULL
+	};
+	const unsigned int numFragmentShaderSources = sizeof( fragmentShaderSources ) / sizeof( *fragmentShaderSources );
+	
+	const char *geometryShaderSources[] = { 
+		<versionInfo();format="cstring">
+		"#define GEOMETRY_SHADER\r\n"
+		"#extension GL_EXT_geometry_shader4 : require\r\n",
+		customCode,
+		NULL
+	};
+	const unsigned int numGeometryShaderSources = sizeof( geometryShaderSources ) / sizeof( *geometryShaderSources );
+
+	GLuint program;
+<result.passes:{ pass |
+	// initialize the program for pass <i0>
+	program = glCreateProgram();
+	checkGLError();
+	
+	<if(pass.vertexShader)>
+	{
+		GLuint vertexShader = glCreateShader( GL_VERTEX_SHADER );
+		vertexShaderSources[ numVertexShaderSources - 1 ] = codeForPasses[<i0>][0];
+		glShaderSource( vertexShader, numVertexShaderSources, vertexShaderSources, NULL );
+		glCompileShader( vertexShader );
+		checkGLError();
+		
+		success = CompileLog( <i0>, GL_VERTEX_SHADER, vertexShader ) && success;
+		
+		glAttachShader( program, vertexShader );
+		glDeleteShader( vertexShader );
+		checkGLError();
+	}
+	<endif>
+	<if(pass.fragmentShader)>
+	{
+		GLuint fragmentShader = glCreateShader( GL_FRAGMENT_SHADER );
+		fragmentShaderSources[ numFragmentShaderSources - 1 ] = codeForPasses[<i0>][1];
+		glShaderSource( fragmentShader, numFragmentShaderSources, fragmentShaderSources, NULL );
+		glCompileShader( fragmentShader );
+		checkGLError();
+		
+		success = CompileLog( <i0>, GL_FRAGMENT_SHADER, fragmentShader ) && success;
+				
+		glAttachShader( program, fragmentShader );
+		glDeleteShader( fragmentShader );
+		checkGLError();
+	}
+	<endif>
+	<if(pass.geometryShader)>
+	{
+		GLuint geometryShader = glCreateShader( GL_GEOMETRY_SHADER_ARB );
+		geometryShaderSources[ numGeometryShaderSources - 1 ] = codeForPasses[<i0>][2];
+		glShaderSource( geometryShader, numGeometryShaderSources, geometryShaderSources, NULL );
+		glCompileShader( geometryShader );
+		checkGLError();
+		
+		success = CompileLog( <i0>, GL_GEOMETRY_SHADER_ARB, geometryShader ) && success;
+				
+		glAttachShader( program, geometryShader );
+		glDeleteShader( geometryShader );
+		checkGLError();
+		
+		// setup the parameters
+		glProgramParameteriEXT( program, GL_GEOMETRY_INPUT_TYPE_EXT, GL_<pass.geometryShader.inputType> );
+		glProgramParameteriEXT( program, GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_<pass.geometryShader.outputType> );
+		glProgramParameteriEXT( program, GL_GEOMETRY_VERTICES_OUT_EXT, <pass.geometryShader.maxEmitVertices> );
+		checkGLError();
+	}
+	<endif>
+	
+	// link the attributes
+	<result.bindings: { binding |glBindAttribLocation( program, <i0>, <binding.name; format="cstring"> );
+	checkGLError();
+}>
+<if(pass.transformFeedbackVaryings)>
+	// link transform feedback varyings
+	const char *varyings[] = { <pass.transformFeedbackVaryings; format="cstring", separator=", "> };
+	const unsigned numVaryings = sizeof( varyings ) / sizeof( *varyings );
+	glTransformFeedbackVaryings( program, numVaryings, varyings, GL_INTERLEAVED_ATTRIBS );
+	checkGLError();
+
+<endif>
+<if(pass.fragDataName)>
+	// link the frag data name
+	glBindFragDataLocation( program, 0, <pass.fragDataName; format="cstring"> );
+	
+<endif>
+	glLinkProgram( program );
+	checkGLError();
+	success = LinkLog( <i0>, program ) && success;
+	
+	programs[ <i0> ] = program;
+}>
+
+	// init uniform locations
+	<result.uniforms: { uniform | 
+<initUniformLocations( uniform = uniform, uniformIndex = i0 )> }>
+	checkGLError();
+	
+	// init the samplers
+	<result.passes: { pass |{
+	glUseProgram( programs[ <i0> ] );
+	GLuint texUnit = 0;
+	<textureUnitSet( programIndex = i0, setExpr = "setTexUnit" )>
+} <\n>}>
+
+	glUseProgram( 0 );
+	checkGLError();
+	
+	return success;
+}
+
+<name>::~<name>() {
+	SafeRelease();
+}
+
+void <name>::SafeRelease() {
+	for( int i = 0 ; i \< <length(result.passes)> ; i++ ) {
+		glDeleteProgram( programs[ i ] );
+		programs[ i ] = 0;
+	}
+	checkGLError();
+}
+>>

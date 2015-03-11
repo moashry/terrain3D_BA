@@ -1,0 +1,74 @@
+Indexed Drawing 
+
+Equalizer:  Total time: 156.422; Frame count: 23605 --- Average FPS: 150.906
+
+
+
+Utah Big (180GB, 2560x1024):
+
+OpenGL 
+Total time: 156.417; Frame count: 21708 --- Average FPS: 138.783
+Total time: 156.419; Frame count: 21340 --- Average FPS: 136.428
+Total time: 156.422; Frame count: 21264 --- Average FPS: 135.94
+
+Equalizer
+
+Total time: 156.425; Frame count: 18694 --- Average FPS: 119.508
+Total time: 156.419; Frame count: 18482 --- Average FPS: 118.157
+Total time: 156.418; Frame count: 16436 --- Average FPS: 105.077
+Total time: 156.422; Frame count: 16556 --- Average FPS: 105.842
+Total time: 156.424; Frame count: 18776 --- Average FPS: 120.033
+
+
+Non-indexed Drawing
+
+OpenGL
+
+Total time: 156.421; Frame count: 13793 --- Average FPS: 88.1789
+Total time: 156.418; Frame count: 13874 --- Average FPS: 88.698
+Total time: 156.417; Frame count: 13763 --- Average FPS: 87.989
+
+
+Equalizer
+
+Total time: 156.422; Frame count: 12849 --- Average FPS: 82.1432
+Total time: 156.434; Frame count: 12560 --- Average FPS: 80.2894
+
+
+Notebook  / Utah Small
+
+Indexed Drawing
+
+OpenGL
+
+Total time: 156.418; Frame count: 10994 --- Average FPS: 70.2863
+Total time: 156.417; Frame count: 11193 --- Average FPS: 71.5586
+Total time: 156.423; Frame count: 10969 --- Average FPS: 70.124
+
+Equalizer
+
+Total time: 156.427; Frame count: 9224 --- Average FPS: 58.9668
+Total time: 156.426; Frame count: 9348 --- Average FPS: 59.7599
+Total time: 156.423; Frame count: 9484 --- Average FPS: 60.6305
+
+Non-indexed Drawing
+
+OpenGL
+Total time: 156.444; Frame count: 8101 --- Average FPS: 51.782
+Total time: 156.419; Frame count: 7816 --- Average FPS: 49.9683
+Total time: 156.421; Frame count: 8647 --- Average FPS: 55.2804
+
+Equalizer
+Total time: 156.423; Frame count: 5697 --- Average FPS: 36.4205
+Total time: 156.429; Frame count: 5564 --- Average FPS: 35.5689
+Total time: 156.428; Frame count: 5671 --- Average FPS: 36.2531
+
+Direct3D Wrapped
+Total: 156.422, 10380, 66.3591
+Total: 156.425, 10122, 64.7081
+Total: 156.425, 10449, 66,7986
+
+Direct3D Original
+Total: 156.425, 10828, 69.2253
+Total: 156.422, 10942, 69.9517
+Total: 156.431, 10943, 69.9542

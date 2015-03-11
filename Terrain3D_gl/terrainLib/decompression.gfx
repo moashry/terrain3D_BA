@@ -1,0 +1,240 @@
+/*************************************************************************************
+
+Terrain3D
+
+Author: Christian Dick
+
+(c) Christian Dick
+
+mailto:dick@in.tum.de
+
+*************************************************************************************/
+
+#include "commonCompression.gfx"
+
+//**************************************************************************************
+// Multi-Pass Geometry Decompression
+//**************************************************************************************
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Pass 0 bis 15
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+uniform {
+	usamplerBuffer stripHeadersBuffer; // single component
+	usamplerBuffer stripDataBuffer; // single component
+	usampler2D texPingPong;
+}
+
+// vertex in
+inputlayout { vPosIn: FLOAT[2], offsetIn: UNSIGNED_INT, numBitsIn: UNSIGNED_INT }
+
+vertex {
+	in vec2 vPosIn;
+	in uint offsetIn;
+	in uint numBitsIn;
+}
+
+// vertex out
+vertex {
+	$define vPos gl_Position
+	flat out uint offset;
+	flat out uint numBits;
+}
+
+// fragment in
+fragment {
+	$define vPos gl_FragCoord
+	flat in uint offset;
+	flat in uint numBits;
+}
+
+// fragment out
+fragment {
+	out uvec4 result;
+}
+
+//--------------------------------------------------------------------------------------
+// Vertex Shader
+//--------------------------------------------------------------------------------------
+vertex {
+	void VSDecompressGeometry()
+	{
+		vPos = vec4(vPosIn, 0.5f, 1.0f);
+		offset = offsetIn;
+		numBits = numBitsIn;
+	}
+}
+//--------------------------------------------------------------------------------------
+// Pixel Shader
+//--------------------------------------------------------------------------------------
+
+fragment {
+	uint ReadData(uint index, uint offset, uint numBits)
+	{
+		uint bitPos = offset + index * numBits;
+		uint readPos = bitPos >> 4u;
+		uint data = (texelFetch(stripDataBuffer, int(readPos + 1u))[0] << 16u) | texelFetch(stripDataBuffer, int( readPos ))[0];
+		uint relBitPos = bitPos & 0xFu;
+		return (data >> relBitPos) & ( (1u << numBits) - 1u );
+	}
+
+	void PSTriangle0()
+	{
+		uint column = uint( vPos.x );
+		uint row = uint( vPos.y );
+		uint stripID = column * NUM_STRIPS_PER_COLUMN + row % NUM_STRIPS_PER_COLUMN;
+		
+		uint stripHeader = texelFetch( stripHeadersBuffer, int( stripID ) )[0];
+		
+		ivec3 v1, v2, v3;
+		
+		v1.x = int( stripHeader & ((1u << (NUM_XY_BITS - 1u)) - 1u) ); // 9 Bit
+		v1.y = int( (stripHeader & (((1u << (NUM_XY_BITS - 1u)) - 1u) << 9u)) >> 9u ); // 9 Bit
+		
+		uint logLength = (stripHeader & 0x003C0000u) >> 18u; // 4 Bit
+		uint dir =(stripHeader & 0x01C00000u) >> 22u; // 3 Bit
+		uint LR = (stripHeader & 0x02000000u) >> 25u; // 1 Bit
+		uint dindex = ((stripHeader & 0x1C000000u) >> 26u) + 2u; // 3 Bit
+		uint iindex = (stripHeader & 0x20000000u) >> 29u; // 1 Bit
+		
+		uint length = 1u << logLength;
+		v2.xy = v1.xy + int( length ) * dirTable[ int( dir ) ];
+		
+		uint dindex1, dindex2;
+		
+		if (iindex == 0u)
+		{
+			dindex1 = dindex;
+			dindex2 = 1u;
+		}
+		else
+		{
+			dindex2 = dindex;
+			dindex1 = 1u;
+		}
+		
+		uint index = 2u + stripID * STRIP_LENGTH;
+		v1.z = int( ReadData(index - dindex1, offset, numBits) >> 2u );
+		v2.z = int( ReadData(index - dindex2, offset, numBits) >> 2u );
+		
+		uint data = ReadData(index, offset, numBits);
+		uint ABC = data & 0x3u;
+		uint type = (ABC << 1u) | LR;
+
+		v3.xy = v1.xy + (ivec2(thirdVertexMatrices[int( type )] * ( v2.xy - v1.xy )) >> 1);
+		v3.z = int( data >> 2u );
+		
+		uint p1 = PackVertex( uvec3( v1 ) );
+		uint p2 = PackVertex( uvec3( v2 ) );
+		uint p3 = PackVertex( uvec3( v3 ) );
+		
+		uint a = 0u;
+		if( ( uint( v2.x ) & ((1u << (NUM_XY_BITS - 1u)) - 1u)) == 0u && v2.x == v3.x )
+		{
+			a = (uint( v2.x ) >> 2u) | (0x3u << (NUM_XY_BITS - 2u));
+		}
+		else if( (uint( v2.y ) & ((1u << (NUM_XY_BITS - 1u)) - 1u)) == 0u && v2.y == v3.y )
+		{
+			a = ((uint( v2.y ) >> 2u) | (0x3u << (NUM_XY_BITS - 2u))) << NUM_XY_BITS;
+		}
+	
+		result = uvec4(p1, p2, p3, a | type);
+	}
+
+
+	void PSTriangle(uint rowOffset, uint stripDataOffset)
+	{
+		uint column = uint( vPos.x );
+		uint row = uint( vPos.y );
+		uint stripID = column * NUM_STRIPS_PER_COLUMN + row % NUM_STRIPS_PER_COLUMN;
+		uvec4 vPreviousTriangle = texelFetch( texPingPong, ivec2(column, row - rowOffset), 0);
+		uint data = ReadData(2u + stripDataOffset + stripID * STRIP_LENGTH, offset, numBits);
+		uint ABC = data & 0x3u;
+		uint p1, p2;
+		if ((vPreviousTriangle.a & 0x1u) == 0u) // L
+		{
+			p1 = vPreviousTriangle.r; // v1
+			p2 = vPreviousTriangle.b; // v3
+		}
+		else
+		{
+			p1 = vPreviousTriangle.b; // v3
+			p2 = vPreviousTriangle.g; // v2
+		}
+		int type = typeTable[int( (vPreviousTriangle.a & 0x7u) * 3u + ABC )];
+		ivec2 v1 = ivec2(p1 & ((1u << NUM_XY_BITS) - 1u), (p1 & (((1u << NUM_XY_BITS) - 1u) << NUM_XY_BITS)) >> NUM_XY_BITS);
+		ivec2 v2 = ivec2(p2 & ((1u << NUM_XY_BITS) - 1u), (p2 & (((1u << NUM_XY_BITS) - 1u) << NUM_XY_BITS)) >> NUM_XY_BITS);
+		ivec3 v3 = ivec3(v1 + ( ivec2( thirdVertexMatrices[ type ] * (v2 - v1) ) >> 1 ), int(data >> 2u));
+		uint p3 = PackVertex( uvec3( v3 ));
+		
+		uint a = 0u;
+		if (( uint( v2.x ) & ((1u << (NUM_XY_BITS - 1u)) - 1u)) == 0u && v2.x == v3.x)
+		{
+			a = (uint( v2.x ) >> 2u) | (0x3u << (NUM_XY_BITS - 2u));
+		}
+		else if ((uint( v2.y ) & ((1u << (NUM_XY_BITS - 1u)) - 1u)) == 0u && v2.y == v3.y)
+		{
+			a = ((uint( v2.y ) >> 2u) | (0x3u << (NUM_XY_BITS - 2u))) << NUM_XY_BITS;
+		}
+	/*
+		if (v2.x == 0)
+		{
+			if (v3.x == 0)
+			{
+				a = 0x3 << (NUM_XY_BITS - 2);
+			}
+		}
+		else if (v2.x == TILE_SIZE)
+		{
+			if (v3.x == TILE_SIZE)
+			{
+				a = 0x3 << (NUM_XY_BITS - 3);
+			}
+		}
+		if (v2.y == 0)
+		{
+			if (v3.y == 0)
+			{
+				a = (0x3 << (NUM_XY_BITS - 2)) << NUM_XY_BITS;
+			}
+		}
+		else if (v2.y == TILE_SIZE)
+		{
+			if (v3.y == TILE_SIZE)
+			{
+				a = (0x3 << (NUM_XY_BITS - 3)) << NUM_XY_BITS;
+			}
+		}
+	*/	
+		result = uvec4(p1, p2, p3, a | uint( type ));
+	}
+}
+
+#define DisableDepth state { glDisable( GL_DEPTH_TEST ); }
+
+#define DecompressionPass( name, fragmentCall ) \
+	pass { \
+		fragDataName result; \
+		SetVertexShader( VSDecompressGeometry() ); \
+		SetFragmentShader( fragmentCall ); \
+ \
+		DisableDepth \
+	}
+	
+DecompressionPass( P0_Triangle0, PSTriangle0() )
+DecompressionPass( P1_Triangle1, PSTriangle(0u, 1u) )
+DecompressionPass( P2_Triangle2, PSTriangle(NUM_STRIPS_PER_COLUMN, 2u) )
+DecompressionPass( P3_Triangle3, PSTriangle(0u, 3u) )
+DecompressionPass( P4_Triangle4, PSTriangle(NUM_STRIPS_PER_COLUMN, 4u) )
+DecompressionPass( P5_Triangle5, PSTriangle(0u, 5u) )
+DecompressionPass( P6_Triangle6, PSTriangle(NUM_STRIPS_PER_COLUMN, 6u) )
+DecompressionPass( P7_Triangle7, PSTriangle(0u, 7u) )
+DecompressionPass( P8_Triangle8, PSTriangle(NUM_STRIPS_PER_COLUMN, 8u) )
+DecompressionPass( P9_Triangle9, PSTriangle(0u, 9u) )
+DecompressionPass( P10_Triangle10, PSTriangle(NUM_STRIPS_PER_COLUMN, 10u) )
+DecompressionPass( P11_Triangle11, PSTriangle(0u, 11u) )
+DecompressionPass( P12_Triangle12, PSTriangle(NUM_STRIPS_PER_COLUMN, 12u) )
+DecompressionPass( P13_Triangle13, PSTriangle(0u, 13u) )
+DecompressionPass( P14_Triangle14, PSTriangle(NUM_STRIPS_PER_COLUMN, 14u) )
+DecompressionPass( P15_Triangle15, PSTriangle(0u, 15u ) )

@@ -1,0 +1,34 @@
+#Equalizer 1.0 ascii
+
+server
+{
+    config
+    {
+        appNode
+        {
+            pipe
+            {
+                window
+                {
+                    # half of 1920x1200
+                    viewport [ 480 300 960 600 ]
+                    channel
+                    {
+                        name "channel"
+                    }
+                }
+            }
+        }
+        compound
+        { 
+            channel "channel"
+            wall
+            {
+				# fovy 45, 16:10
+                bottom_left  [ -0.663 -0.414 -1.0 ]
+                bottom_right [  0.663 -0.414 -1.0 ]
+                top_left     [ -0.663  0.414 -1.0 ]
+            }
+        }
+    }
+}

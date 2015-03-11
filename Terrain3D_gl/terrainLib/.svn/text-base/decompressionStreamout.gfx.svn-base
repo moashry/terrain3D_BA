@@ -1,0 +1,132 @@
+/*************************************************************************************
+
+Terrain3D
+
+Author: Christian Dick
+
+(c) Christian Dick
+
+mailto:dick@in.tum.de
+
+*************************************************************************************/
+
+#include "commonCompression.gfx"
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Pass 16
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+uniform {
+	usampler2D triangleDataTexture0;
+	usampler2D triangleDataTexture1;
+}
+
+inputlayout { index: UNSIGNED_INT }
+
+// vertex in
+vertex {
+$ifndef INDEXED_DRAWING
+	in uint index;
+$else
+$	define index uint( gl_VertexID )
+$endif
+}
+
+// vertex out
+vertex {
+	out uvec4 vertexOutA;
+	out uvec4 vertexOutB;
+}
+
+// geometry in
+geometry {
+	in uvec4 vertexOutA[1];
+	in uvec4 vertexOutB[1];
+}
+
+// geometry out
+geometry {
+	out uvec3 vertexA;
+	out uvec3 vertexB;
+}
+
+uniform {
+	uint firstStrip;
+	// used for batch rendering
+	uint base;
+}
+
+//--------------------------------------------------------------------------------------
+// Vertex Shader
+//--------------------------------------------------------------------------------------
+vertex {
+$ifdef INDEXED_DRAWING
+	$define base 0u
+$endif
+
+	void VSDecompressStripP1()
+	{
+		uint realIndex = index + base;
+		
+		uint stripID = firstStrip + realIndex / 8u;
+		uint triangleID = realIndex % 8u;
+		uint column = stripID / NUM_STRIPS_PER_COLUMN;
+		uint row = triangleID * NUM_STRIPS_PER_COLUMN + stripID % NUM_STRIPS_PER_COLUMN;
+		vertexOutA = texelFetch( triangleDataTexture0, ivec2(column, row), 0 );
+		vertexOutB = texelFetch( triangleDataTexture1, ivec2(column, row), 0 );
+	}
+}
+//--------------------------------------------------------------------------------------
+// Geometry Shader
+//--------------------------------------------------------------------------------------
+geometry {
+	void GSDecompressStripP1()
+	{	
+		// for some reason gl_Position needs to be set
+		gl_Position = vec4(0);
+		
+		// v2 v1 v3
+		vertexA.rgb = vertexOutA[0].grb;
+
+		uint a = vertexOutA[0].a & 0xFFFFFFF8u;
+		if (a != 0u)
+		{
+			uvec2 p_ = vertexOutA[0].gb | a; // r: v2_, g: v3_
+			vertexB.r = vertexOutA[0].g; // v2
+			vertexB.g = vertexOutA[0].b; // v3
+			vertexB.b = p_.r; // v2_
+			
+			EmitVertex();
+			
+			vertexA.r = p_.r; // v2_
+			vertexA.g = vertexOutA[0].b; // v3
+			vertexA.b = p_.g; // v3_
+		}
+		
+		vertexB.rgb = vertexOutB[0].grb; // v2 v1 v3
+		
+		EmitVertex();
+		
+		a = vertexOutB[0].a & 0xFFFFFFF8u;
+		if (a != 0u)
+		{
+			uvec2 p_ = vertexOutB[0].gb | a; // r: v2_, g: v3_
+			vertexA.r = vertexOutB[0].g; // v2
+			vertexA.g = vertexOutB[0].b; // v3
+			vertexA.b = p_.r; // v2_
+			
+			vertexB.r = p_.r; // v2_
+			vertexB.g = vertexOutB[0].b; // v3
+			vertexB.b = p_.g; // v3_
+			
+			EmitVertex();
+		}
+	}
+}
+
+pass {
+	SetVertexShader( VSDecompressStripP1() );
+	SetGeometryShader( POINTS, POINTS, 3, GSDecompressStripP1() );
+	
+	feedback { vertexA, vertexB }
+}

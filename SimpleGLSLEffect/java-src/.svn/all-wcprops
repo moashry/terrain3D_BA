@@ -1,0 +1,185 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src
+END
+antlrworks-1.2.3.jar
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/antlrworks-1.2.3.jar
+END
+antlrworks-1.3.jar
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/antlrworks-1.3.jar
+END
+jogl_awt.dll
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/jogl_awt.dll
+END
+SharedCode.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/SharedCode.java
+END
+SamSolTest.g
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/SamSolTest.g
+END
+gluegen-rt.dll
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/gluegen-rt.dll
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/.project
+END
+gluegen-rt.jar
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/gluegen-rt.jar
+END
+SimpleGLSLEffectFileParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/SimpleGLSLEffectFileParser.java
+END
+ShaderTestCompilation.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/ShaderTestCompilation.java
+END
+Pass.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/Pass.java
+END
+antlr-3.1.2.jar
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/antlr-3.1.2.jar
+END
+Binding.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/Binding.java
+END
+__Test__.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/__Test__.java
+END
+compile.bat
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/compile.bat
+END
+Uniform.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/Uniform.java
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/.classpath
+END
+test.gfx
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/test.gfx
+END
+SimpleGLSLEffectCompiler.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/SimpleGLSLEffectCompiler.java
+END
+antlr-2.7.7.jar
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/antlr-2.7.7.jar
+END
+runnableJARexport.xml
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/runnableJARexport.xml
+END
+jogl.dll
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/jogl.dll
+END
+jogl.jar
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/jogl.jar
+END
+effectTemplates.stg
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/effectTemplates.stg
+END
+SimpleGLSLEffectFileLexer.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/SimpleGLSLEffectFileLexer.java
+END
+run.bat
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/run.bat
+END
+antlr-runtime-3.1.2.jar
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/antlr-runtime-3.1.2.jar
+END
+SimpleGLSLEffectFile.g
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/SimpleGLSLEffectFile.g
+END
+stringtemplate-3.2.jar
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/stringtemplate-3.2.jar
+END
+jogl_cg.dll
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/java-src/jogl_cg.dll
+END

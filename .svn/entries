@@ -1,0 +1,80 @@
+10
+
+dir
+557
+https://cgsr1.informatik.tu-muenchen.de:8443/svn/kirschan/branches/ashry
+https://cgsr1.informatik.tu-muenchen.de:8443/svn/kirschan
+
+
+
+2010-06-21T13:47:42.826293Z
+554
+treibm
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+97d7bf2b-4e60-da48-a750-d249e17d3b3d
+
+BScPresentation
+dir
+
+benchmarking.txt
+file
+
+
+
+
+2010-04-20T15:05:10.511599Z
+b0d32ca1e8ae70f1590b9033fa726f95
+2009-10-15T04:10:59.962097Z
+266
+kirschan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2201
+
+BScThesis
+dir
+
+Equalizer-env
+dir
+
+SimpleGLSLEffect
+dir
+
+glut
+dir
+
+Terrain3D_gl
+dir
+

@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/ctp
+END
+test.ctp
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/ctp/test.ctp
+END
+textSource.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/ctp/textSource.cpp
+END
+ctp.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/ctp/ctp.cpp
+END
+ctp.vcproj
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/ctp/ctp.vcproj
+END
+textSource.h
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/ctp/textSource.h
+END

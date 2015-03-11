@@ -1,0 +1,320 @@
+/*************************************************************************************
+
+Terrain3D
+
+Author: Christian Dick
+
+(c) Christian Dick
+
+mailto:dick@in.tum.de
+
+*************************************************************************************/
+
+#include "global.h"
+#include "geometrydecompressor.h"
+
+using namespace Renderer;
+
+#if !defined( INDEXED_DRAWING )
+static const uint indexBufferSize = 4096;
+#endif
+
+GeometryDecompressor::GeometryDecompressor()
+: m_pStripHeadersBuffer(0), m_pStripDataBuffer(0), m_uiCurrentColumnOffset(0),
+m_uiCurrentStripDataBufferOffset(0), m_pVertexBuffer(0), m_pDevice(0)
+{
+	for (uint ui = 0; ui < 2; ui++)
+	{
+		m_pTriangleDataTexture[ui] = 0;
+	}
+	m_jobs.reserve(uiMAX_NUM_JOBS);
+	m_vertices.reserve(2 * uiMAX_NUM_JOBS + 2);
+}
+
+
+bool GeometryDecompressor::Create(Renderer::Device *pDevice)
+{
+	m_pDevice = pDevice;
+
+	V_RETURN( m_decompressionEffect.Create() );
+#ifdef INDEXED_DRAWING
+    // pass on our state
+    V_RETURN( m_decompressionStreamoutEffect.Create( "#define INDEXED_DRAWING\n" ) );
+#else
+    V_RETURN( m_decompressionStreamoutEffect.Create() );
+#endif
+
+	// Buffer für Strip Headers
+	Renderer::TextureBuffer::Create( m_pStripHeadersBuffer,GL_R32UI, 4 * uiNUM_COLUMNS * uiNUM_STRIPS_PER_COLUMN, GL_STREAM_DRAW );
+
+	m_decompressionEffect.stripHeadersBuffer.Set(m_pStripHeadersBuffer);
+
+	// Buffer für Strip Data
+	Renderer::TextureBuffer::Create( m_pStripDataBuffer,GL_R16UI, 2 * (uiNUM_COLUMNS * uiNUM_STRIPS_PER_COLUMN * 16 + uiMAX_NUM_JOBS * 3), GL_STREAM_DRAW );
+
+	m_decompressionEffect.stripDataBuffer.Set(m_pStripDataBuffer);
+
+	// Vertex Buffer
+	Renderer::Buffer::Create( m_pVertexBuffer, sizeof(Vertex) * (2 * uiMAX_NUM_JOBS + 2), GL_STREAM_DRAW, 0 );
+#ifndef INDEXED_DRAWING
+	{
+		uint initData[indexBufferSize];
+		for( int i = 0 ; i < indexBufferSize ; i++ ) {
+			initData[ i ] = i;
+		}
+		V_RETURN( Renderer::Buffer::Create( m_pIndexBuffer, sizeof( initData ), GL_STATIC_DRAW, (void*) initData ) );
+	}
+#endif
+	// Texturen für temporäre Dreiecksdaten
+	for (uint ui = 0; ui < 2; ui++)
+	{
+		Renderer::FramebufferTexture2D::Create( uiNUM_COLUMNS, uiNUM_STRIPS_PER_COLUMN * 8, 1, GL_RGBA32UI, m_pTriangleDataTexture[ ui ] );
+	}
+
+	return true;
+}
+
+
+void GeometryDecompressor::SafeRelease()
+{
+	for (uint ui = 0; ui < 2; ui++)
+	{
+		SAFE_DELETE(m_pTriangleDataTexture[ui]);
+	}
+#if !defined( INDEXED_DRAWING )
+	SAFE_DELETE(m_pIndexBuffer);
+#endif
+	SAFE_DELETE(m_pVertexBuffer);
+	SAFE_DELETE(m_pStripDataBuffer);
+	SAFE_DELETE(m_pStripHeadersBuffer);
+
+	m_decompressionEffect.SafeRelease();
+	m_decompressionStreamoutEffect.SafeRelease();
+
+	m_pDevice = 0;
+}
+
+
+void GeometryDecompressor::AddJob(uint uiStripDataFormat,
+	uint uiStripHeadersSize, const byte* pStripHeaders,
+	uint uiStripDataSize, const byte* pStripData,
+	uint uiNumTriangles,
+	Renderer::Buffer *pVB, uint uiVBOffset, uint uiX, uint uiY, uint uiLevel
+)
+{
+	assert(uiStripHeadersSize <= ((uiTILE_SIZE * uiTILE_SIZE * 2) / 16) * 4);
+
+	uint uiNumColumnsNeeded = ((uiStripHeadersSize / 4) + uiNUM_STRIPS_PER_COLUMN - 1) / uiNUM_STRIPS_PER_COLUMN;
+	if (uiNumColumnsNeeded > uiNUM_COLUMNS - m_uiCurrentColumnOffset || m_jobs.size() == uiMAX_NUM_JOBS)
+	{
+		FlushJobs();
+	}
+
+	assert(m_uiCurrentColumnOffset * uiNUM_STRIPS_PER_COLUMN * 4 + uiStripHeadersSize <= uiNUM_COLUMNS * uiNUM_STRIPS_PER_COLUMN * 4);
+	m_pStripHeadersBuffer->SubData( m_uiCurrentColumnOffset * uiNUM_STRIPS_PER_COLUMN * 4, uiStripHeadersSize, pStripHeaders );
+
+	assert( m_uiCurrentStripDataBufferOffset + uiStripDataSize <= (uiNUM_COLUMNS * uiNUM_STRIPS_PER_COLUMN * 16 + uiMAX_NUM_JOBS * 3) * 2 );
+	m_pStripDataBuffer->SubData( m_uiCurrentStripDataBufferOffset, uiStripDataSize, pStripData );
+
+	Job job;
+	memset(&job, 0, sizeof(Job));
+	job.m_uiColumnOffset = m_uiCurrentColumnOffset;
+	job.m_uiNumColumns = uiNumColumnsNeeded;
+	job.m_uiStripDataBufferOffset = m_uiCurrentStripDataBufferOffset;
+	job.m_uiStripDataFormat = uiStripDataFormat;
+	job.m_uiNumTriangles = uiNumTriangles;
+	job.m_pVB = pVB;
+	job.m_uiVBOffset = uiVBOffset;
+
+	job.m_uiX = uiX;
+	job.m_uiY = uiY;
+	job.m_uiLevel = uiLevel;
+
+	m_jobs.push_back(job);
+
+	m_uiCurrentColumnOffset += uiNumColumnsNeeded;
+	m_uiCurrentStripDataBufferOffset += uiStripDataSize;
+}
+
+// Debug code to dump the temp textures into files or to look at their content
+#if 0
+static void WriteToFile( const char *filename, void *data, size_t size, bool append ) {
+	FILE *file;
+	file = fopen( filename, append ? "ab" : "wb" );
+	fwrite( data, size, 1, file );
+	fclose( file );
+}
+
+static void DebugTexture( Renderer::Device *device, Renderer::RenderTargetShaderTexture2D *texture, bool dumpToFile = false, bool append = true ) {
+	device->SetOffscreenRenderTarget(0);
+
+	GLint internalFormat;
+	glBindTexture( GL_TEXTURE_2D, texture->GetTextureID() );
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalFormat );
+
+	GLint width, height;
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width );
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height );
+
+	GLint redSize, greenSize, blueSize, alphaSize;
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_RED_SIZE, &redSize );
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_GREEN_SIZE, &greenSize );
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_BLUE_SIZE, &blueSize );
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_ALPHA_SIZE, &alphaSize );
+
+	GLint redType, greenType, blueType, alphaType;
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_RED_TYPE, &redType );
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_GREEN_TYPE, &greenType );
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_BLUE_TYPE, &blueType );
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_ALPHA_TYPE, &alphaType );
+
+	size_t size = width * height * (redSize + greenSize + blueSize + alphaSize) / 8;
+
+	uint *buffer = new uint[ width * height * 4 ];
+	glGetTexImage( GL_TEXTURE_2D, 0, GL_RGBA_INTEGER, GL_UNSIGNED_INT, buffer );
+	
+	WriteToFile( "gldump.raw", buffer, size, append );
+
+	delete[] buffer;
+
+	glBindTexture( GL_TEXTURE_2D, 0 );
+}
+#endif
+
+void GeometryDecompressor::FlushJobs()
+{
+	if (m_jobs.size() == 0)
+	{
+		return;
+	}
+
+	m_vertices.resize(2 * m_jobs.size() + 2);
+	memset(&m_vertices[0], 0, sizeof(Vertex) * (2 * m_jobs.size() + 2));
+
+	m_vertices[0].m_vPos.x() = -1.0f;
+	m_vertices[0].m_vPos.y() = -1.0f;
+	m_vertices[1].m_vPos.x() = -1.0f;
+	m_vertices[1].m_vPos.y() = 1.0f;
+
+	for (uint ui = 0; ui < m_jobs.size(); ui++)
+	{
+		Job& job = m_jobs[ui];
+
+		uint bufferOffset = job.m_uiStripDataBufferOffset * 8 - job.m_uiColumnOffset * uiNUM_STRIPS_PER_COLUMN * 16 * (job.m_uiStripDataFormat + 2);
+		uint dataFormat = job.m_uiStripDataFormat + 2;
+
+		m_vertices[2 * ui + 2].m_vPos.x() = -1.0f + (job.m_uiColumnOffset + job.m_uiNumColumns) * (2.0f / static_cast<float>(uiNUM_COLUMNS));
+		m_vertices[2 * ui + 2].m_vPos.y() = -1.0f;
+		m_vertices[2 * ui + 2].m_uiStripDataBufferOffset = bufferOffset;
+		m_vertices[2 * ui + 2].m_uiStripDataFormat = dataFormat;
+
+		m_vertices[2 * ui + 3].m_vPos.x() = m_vertices[2 * ui + 2].m_vPos.x();
+		m_vertices[2 * ui + 3].m_vPos.y() = 1.0f;
+		m_vertices[2 * ui + 3].m_uiStripDataBufferOffset = bufferOffset;
+		m_vertices[2 * ui + 3].m_uiStripDataFormat = dataFormat;
+	}
+
+	m_pVertexBuffer->SubData( 0, static_cast<uint>(sizeof(Vertex) * m_vertices.size()), &m_vertices[0] );
+
+	// TODO: magic number alarm! [7/18/2009 Andreas Kirsch]
+	assert( sizeof( Vertex ) == 16 );
+	m_pVertexBuffer->Bind( GL_ARRAY_BUFFER );
+	m_decompressionEffect.SetupBinding( sizeof( Vertex ), 0 );
+
+	// keep left/top instead of left/bottom - mainly to keep the coordinates consistent with the texture coordinates
+	// which use left/top origin in DX and a left/bottom origin in GL, too
+	glViewport( 0, 0, uiNUM_COLUMNS, uiNUM_STRIPS_PER_COLUMN );
+	checkGLError();
+
+	m_pTriangleDataTexture[ 0 ]->BindFramebuffer();
+
+	m_decompressionEffect.SetupPass( 0 );
+
+	m_pDevice->StringMarker( "Starting decompression" );
+
+	glDrawArrays( GL_TRIANGLE_STRIP, 0, GLsizei( m_vertices.size() ) );
+	checkGLError();
+
+	for (uint ui = 1; ui < 16; ui++)
+	{
+		m_pTriangleDataTexture[ ui % 2 ]->BindFramebuffer();
+		// keep left/top instead of left/bottom - mainly to keep the coordinates consistent with the texture coordinates
+		// which use left/top origin in DX and a left/bottom origin in GL, too
+		glViewport( 0, ( ui / 2 ) * uiNUM_STRIPS_PER_COLUMN, uiNUM_COLUMNS, uiNUM_STRIPS_PER_COLUMN );
+		checkGLError();
+
+		m_decompressionEffect.texPingPong.Set( m_pTriangleDataTexture[ ( ui - 1 ) % 2 ] );
+		m_decompressionEffect.SetupPass( ui );
+
+		glDrawArrays( GL_TRIANGLE_STRIP, 0, GLsizei( m_vertices.size() ) );
+		checkGLError();
+	}
+
+	glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+	checkGLError();
+
+	glEnable( GL_RASTERIZER_DISCARD );
+
+#if	defined( INDEXED_DRAWING )
+	m_pDevice->SetNoVertexBuffer();
+#else
+	glBindBuffer( GL_ARRAY_BUFFER, m_pIndexBuffer->GetBufferID() );
+	glVertexAttribIPointer( 0, 1, GL_UNSIGNED_INT, sizeof( uint ), (const GLvoid*) 0 );
+	glEnableVertexAttribArray( 0 );
+	Renderer::checkGLError();
+#endif
+	m_decompressionStreamoutEffect.triangleDataTexture0.Set( m_pTriangleDataTexture[ 0 ] );
+	m_decompressionStreamoutEffect.triangleDataTexture1.Set( m_pTriangleDataTexture[ 1 ] );
+
+	for (uint ui = 0; ui < m_jobs.size(); ui++)
+	{
+		Job& job = m_jobs[ui];
+
+#if !defined( INDEXED_DRAWING )
+		uint base = 0;
+		m_decompressionStreamoutEffect.base.Set( base );
+#endif
+		m_decompressionStreamoutEffect.firstStrip.Set( job.m_uiColumnOffset * uiNUM_STRIPS_PER_COLUMN );
+		m_decompressionStreamoutEffect.SetupPass( 0 );
+
+		// enable transform feedback
+		job.m_pVB->BindRange( GL_TRANSFORM_FEEDBACK_BUFFER, 0, job.m_uiVBOffset );
+		glBeginTransformFeedback( GL_POINTS );
+		checkGLError();
+
+#if defined( INDEXED_DRAWING )
+		glDrawArrays( GL_POINTS, 0, (job.m_uiNumTriangles + 1) / 2 );
+		checkGLError();
+#else
+		uint numPoints = (job.m_uiNumTriangles + 1) / 2;
+		while( numPoints > indexBufferSize ) {
+			glDrawArrays( GL_POINTS, 0, indexBufferSize );
+			checkGLError();
+			numPoints -= indexBufferSize;
+
+			m_decompressionStreamoutEffect.base.Set( base += indexBufferSize );
+		}
+		glDrawArrays( GL_POINTS, 0, numPoints );
+		checkGLError();
+#endif
+
+		// disable transform feedback
+		glEndTransformFeedback();
+		checkGLError();
+		Renderer::Buffer::ResetBind( GL_TRANSFORM_FEEDBACK_BUFFER, 0 );
+
+		m_pDevice->StringMarker( "Decompression into buffer %i, offset %i", job.m_pVB->GetBufferID(), job.m_uiVBOffset );
+	}
+
+#if !defined( INDEXED_DRAWING )
+	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+	glDisableVertexAttribArray( 0 );
+	Renderer::checkGLError();
+#endif
+
+	glDisable( GL_RASTERIZER_DISCARD );
+	
+	m_jobs.clear();
+	m_uiCurrentColumnOffset = 0;
+	m_uiCurrentStripDataBufferOffset = 0;
+}

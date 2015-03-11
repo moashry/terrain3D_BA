@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/kirschan/!svn/ver/470/branches/ashry/glut
+END
+glut64.dll
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/kirschan/!svn/ver/470/branches/ashry/glut/glut64.dll
+END
+glut.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/kirschan/!svn/ver/470/branches/ashry/glut/glut.h
+END
+glut32.lib
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/kirschan/!svn/ver/470/branches/ashry/glut/glut32.lib
+END
+glut.def
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/kirschan/!svn/ver/470/branches/ashry/glut/glut.def
+END
+glut32.dll
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/kirschan/!svn/ver/470/branches/ashry/glut/glut32.dll
+END
+glut64.lib
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/kirschan/!svn/ver/470/branches/ashry/glut/glut64.lib
+END
+README-win32.txt
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/kirschan/!svn/ver/470/branches/ashry/glut/README-win32.txt
+END

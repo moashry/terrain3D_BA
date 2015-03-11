@@ -1,0 +1,10 @@
+K 10
+svn:ignore
+V 4
+*.i
+
+K 13
+svn:mergeinfo
+V 47
+/branches/MCAM/Terrain3D_gl/src:314-316,322,324
+END

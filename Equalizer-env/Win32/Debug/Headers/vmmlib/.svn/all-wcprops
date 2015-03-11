@@ -1,0 +1,131 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib
+END
+math.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/math.hpp
+END
+lapack.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/lapack.hpp
+END
+svd.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/svd.hpp
+END
+exception.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/exception.hpp
+END
+vector.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/vector.hpp
+END
+matrix.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/matrix.hpp
+END
+enable_if.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/enable_if.hpp
+END
+linear_least_squares.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/linear_least_squares.hpp
+END
+frustum.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/frustum.hpp
+END
+lapack_svd.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/lapack_svd.hpp
+END
+frustum_culler.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/frustum_culler.hpp
+END
+vmmlib_config.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/vmmlib_config.hpp
+END
+qr_decomposition.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/qr_decomposition.hpp
+END
+lapack_types.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/lapack_types.hpp
+END
+lapack_linear_least_squares.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/lapack_linear_least_squares.hpp
+END
+lapack_includes.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/lapack_includes.hpp
+END
+jacobi_solver.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/jacobi_solver.hpp
+END
+quaternion.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/quaternion.hpp
+END
+vmmlib.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/vmmlib.hpp
+END
+matrix_functors.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/matrix_functors.hpp
+END
+visibility.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/Win32/Debug/Headers/vmmlib/visibility.hpp
+END

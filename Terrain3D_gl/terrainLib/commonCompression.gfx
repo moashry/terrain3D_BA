@@ -1,0 +1,58 @@
+/******************************************************************************
+
+commonCompression.fx
+
+Author: Andreas Kirsch
+
+(c) Andreas Kirsch
+
+mailto:kirschan@in.tum.de
+
+*******************************************************************************/
+#include "common.gfx"
+
+shared {
+	#define STRIP_LENGTH 16u
+
+	#define A_L		0
+	#define A_R		1
+	#define B_L		2
+	#define B_R		3
+	#define C_L		4
+	#define C_R		5
+
+	const int typeTable[6 * 3] = int[]
+	(
+		A_L, B_R, C_L,
+		A_R, B_L, C_R,
+		A_L, B_R, C_L,
+		A_R, B_L, C_R,
+		A_R, B_L, C_R,
+		A_L, B_R, C_L
+	);
+
+	// HLSL uses row-major
+	// GLSL uses column-major
+	// => transpose the matrices compared to common.fx
+	#define DXMAT2( m11, m12, m21, m22 ) mat2( m11, m21, m12, m22 )
+	const mat2 thirdVertexMatrices[6] = mat2[](
+		DXMAT2( 0, 2, -2, 0 ),
+		DXMAT2( 2, 2, -2, 2 ),
+		DXMAT2( 2, 2, -2, 2 ),
+		DXMAT2( 0, 2, -2, 0 ),
+		DXMAT2( 1, 1, -1, 1 ),
+		DXMAT2( 1, 1, -1, 1 )
+	);
+
+	const ivec2 dirTable[8] = ivec2[](
+		ivec2(0, 1),
+		ivec2(1, 1),
+		ivec2(1, 0),
+		ivec2(1, -1),
+		ivec2(0, -1),
+		ivec2(-1, -1),
+		ivec2(-1, 0),
+		ivec2(-1, 1)
+	);
+#undef const
+}

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VisualStudioToolFile
+	Name="Simple GLSL Effects"
+	Version="8.00"
+	>
+	<Rules>
+		<CustomBuildRule
+			Name="Simple GLSL Effect Compiler"
+			DisplayName="Simple GLSL Effect Compiler"
+			CommandLine="&quot;$(SolutionDir)\..\SimpleGLSLEffect\bin\compileGLSLeffect.bat&quot; [inputs]"
+			Outputs="$(InputDir)$(InputName).cpp"
+			FileExtensions="*.gfx"
+			ExecutionDescription="Compiling simple GLSL effect.."
+			>
+			<Properties>
+			</Properties>
+		</CustomBuildRule>
+	</Rules>
+</VisualStudioToolFile>

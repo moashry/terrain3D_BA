@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/x64/Release
+END
+EqualizerServer.dll
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/x64/Release/EqualizerServer.dll
+END
+EqualizerServer.exp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/x64/Release/EqualizerServer.exp
+END
+Equalizer.pdb
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/x64/Release/Equalizer.pdb
+END
+Equalizer.lib
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/x64/Release/Equalizer.lib
+END
+pthreadVC2.lib
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/x64/Release/pthreadVC2.lib
+END
+Equalizer.dll
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/x64/Release/Equalizer.dll
+END
+Equalizer.exp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/x64/Release/Equalizer.exp
+END
+EqualizerServer.pdb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/x64/Release/EqualizerServer.pdb
+END
+pthreadVC2.dll
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/x64/Release/pthreadVC2.dll
+END
+EqualizerServer.lib
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/kirschan/!svn/ver/470/branches/ashry/Equalizer-env/x64/Release/EqualizerServer.lib
+END

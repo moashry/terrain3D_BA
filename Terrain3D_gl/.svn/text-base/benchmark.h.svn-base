@@ -1,0 +1,60 @@
+/*************************************************************************************
+
+Terrain3D
+
+Author: Christian Dick
+
+(c) Christian Dick
+
+mailto:dick@in.tum.de
+
+*************************************************************************************/
+
+
+#ifndef __TUM3D__BENCHMARK_H__
+#define __TUM3D__BENCHMARK_H__
+
+#include <stdio.h>
+#include "camera.h"
+#include "util.h"
+
+
+enum BENCHMARK_STATE
+{
+	BENCH_STATE_IDLE = 0,
+	BENCH_STATE_BENCHMARKING
+};
+
+
+class Benchmark
+{
+public:
+	Benchmark(Camera* pCamera, const Box* pBox);
+	~Benchmark();
+	void Start();
+	bool Update(double fTime);
+	void Done();
+	BENCHMARK_STATE GetState();
+
+private:
+	Camera*			m_pCamera;
+	Box				m_box;
+	D3DXVECTOR3		m_vOriginalPosition;
+	float			m_fOriginalHeading, m_fOriginalPitch, m_fOriginalRoll, m_fOriginalTurn;
+	FILE*			m_hLogFile;
+	BENCHMARK_STATE	m_state;
+
+	D3DXVECTOR3		m_vPosition;
+	float			m_fHeading;
+	float			m_fPitch;
+	bool			m_bToggle;
+
+};
+
+
+inline BENCHMARK_STATE Benchmark::GetState()
+{
+	return m_state;
+}
+
+#endif

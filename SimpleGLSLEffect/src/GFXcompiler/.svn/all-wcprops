@@ -1,0 +1,101 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler
+END
+strprintf.h
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/strprintf.h
+END
+output.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/output.cpp
+END
+GFXcompiler.vcproj
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/GFXcompiler.vcproj
+END
+lineFileMapper.h
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/lineFileMapper.h
+END
+baseRecognizer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/baseRecognizer.cpp
+END
+textSource.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/textSource.cpp
+END
+baseRecognizer.h
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/baseRecognizer.h
+END
+textSource.h
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/textSource.h
+END
+testCompiler.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/testCompiler.cpp
+END
+compiler.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/compiler.cpp
+END
+testCompiler.h
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/testCompiler.h
+END
+output_p.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/output_p.cpp
+END
+test.gfx
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/test.gfx
+END
+gfxRecognizer.h
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/gfxRecognizer.h
+END
+GFXcompiler.sln
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/GFXcompiler.sln
+END
+resource.h
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/kirschan/!svn/ver/554/branches/ashry/SimpleGLSLEffect/src/GFXcompiler/resource.h
+END

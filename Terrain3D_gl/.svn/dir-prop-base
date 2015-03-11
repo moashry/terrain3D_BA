@@ -1,0 +1,23 @@
+K 10
+svn:ignore
+V 217
+*.ncb
+*.suo
+*.user
+Debug Equalizer Win32
+Debug Equalizer x64
+Debug OpenGL Win32
+Debug OpenGL x64
+Release Equalizer Win32
+Release Equalizer x64
+Release OpenGL Win32
+Release OpenGL x64
+Terrain3D.cfg
+Intermediates
+*.log
+
+K 13
+svn:mergeinfo
+V 43
+/branches/MCAM/Terrain3D_gl:314-316,322,324
+END

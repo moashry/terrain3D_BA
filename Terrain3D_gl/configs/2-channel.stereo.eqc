@@ -1,0 +1,51 @@
+#Equalizer 1.0 ascii
+
+global
+{
+    EQ_CONFIG_FATTR_EYE_BASE        0.5
+}
+server
+{
+    config
+    {
+        appNode
+        {
+            pipe
+            {
+                window
+                {
+                    viewport [ 160 200 800 400 ]
+                    channel 
+                    {
+                        name "channel-left" 
+                        viewport [ 0 0 0.5 1.0 ]
+                    }
+                    channel 
+                    {
+                        name "channel-right" 
+                        viewport [ 0.5 0 0.5 1.0 ]
+                    }
+                }
+            }
+        }
+        compound 
+        {
+            wall
+            {
+                bottom_left  [ -.414 -.414 -1 ]
+                bottom_right [  .414 -.414 -1 ]
+                top_left     [ -.414  .414 -1 ]
+            }
+            compound
+            {
+                channel "channel-left"
+                eye [ LEFT ]
+            }
+            compound
+            {
+                channel "channel-right"
+                eye [ RIGHT ]
+            }
+        }
+    }    
+}
